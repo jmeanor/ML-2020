@@ -13,7 +13,7 @@ from matplotlib import pyplot as plt
 
 HyperParams = {
     'kernel':('linear', 'rbf'),
-    'C':[1, 10]
+    'C': np.logspace(-6, -1, 10)
 }
 
 def runSVM(X_train, X_test, y_train, y_test, data):
