@@ -11,6 +11,7 @@ matplotlib.use("macOSX")
 from matplotlib import pyplot as plt
 
 from dt import runDT
+from svm import runSVM
 
 # Load Data
 data = load_iris()
@@ -27,3 +28,4 @@ print('X_train,', len(X_train), 'X_test,', len(X_test), 'Y_train,', len(y_train)
 
 # Run Analysis with Decision Tree
 runDT(X_train, X_test, y_train, y_test, data)
+runSVM(X_train, X_test, y_train, y_test, data)
