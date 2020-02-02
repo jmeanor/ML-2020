@@ -10,6 +10,7 @@ from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import learning_curve
 import os
 import math
+import graph
 # Plotting
 import matplotlib
 matplotlib.use("macOSX")
@@ -57,7 +58,7 @@ def runDT(X_train, X_test, y_train, y_test, data, path):
 
     # Learning Curve
     train_sizes, train_scores, valid_scores, fit_times, score_times = learning_curve(
-        bestModel, X_train, y_train, cv=CV, return_times=True)
+        bestModel, X_train, y_train, cv=CV, return_times=True, train_sizes=np.linspace(0.1, 1.0, 8))
 
     train_scores_mean = np.mean(train_scores, axis=1)
     train_scores_std = np.std(train_scores, axis=1)
@@ -76,26 +77,30 @@ def runDT(X_train, X_test, y_train, y_test, data, path):
     complex_test_scores_mean = np.mean(complex_valid_scores, axis=1)
     complex_test_scores_std = np.std(complex_valid_scores, axis=1)
     # log.info(complex_train_scores_mean.shape, complex_train_scores_std.shape, complex_test_scores_mean.shape, complex_test_scores_std.shape)
+    _, axes = plt.subplots(1, 2, figsize=(12, 5))
 
     # Plot learning curve
-    _, axes = plt.subplots(1, 2, figsize=(12, 5))
-    axes[0].grid()
-    axes[0].set_title('DT - Learning Curve (max_depth: %i) ' %
-                      bestParams['max_depth'])
-    axes[0].fill_between(train_sizes, train_scores_mean - train_scores_std,
-                         train_scores_mean + train_scores_std, alpha=0.1,
-                         color="r")
-    axes[0].fill_between(train_sizes, test_scores_mean - test_scores_std,
-                         test_scores_mean + test_scores_std, alpha=0.1,
-                         color="g")
-    axes[0].plot(train_sizes, train_scores_mean, 'o-', color="r",
-                 label="Training score")
-    axes[0].plot(train_sizes, test_scores_mean, 'o-', color="g",
-                 label="Cross-validation score")
-    axes[0].set_ylim((0, 1.1))
-    axes[0].set_xlabel("# of samples")
-    axes[0].set_ylabel("Score")
-    axes[0].legend(loc="best")
+    learn_title = 'DT - Learning Curve (max_depth: %i) ' % bestParams['max_depth']
+    learn_vals = (train_sizes, train_scores_mean, train_scores_std, test_scores_mean, test_scores_std)
+    labels = ("Training score", "Cross-validation score", "# of samples", "Score")
+    graph.plotLearningCurve(axes[0], learn_title, *learn_vals, *labels)
+   
+    # axes[0].grid()
+    # axes[0].set_title(learn_title)
+    # axes[0].fill_between(train_sizes, train_scores_mean - train_scores_std,
+    #                      train_scores_mean + train_scores_std, alpha=0.1,
+    #                      color="r")
+    # axes[0].fill_between(train_sizes, test_scores_mean - test_scores_std,
+    #                      test_scores_mean + test_scores_std, alpha=0.1,
+    #                      color="g")
+    # axes[0].plot(train_sizes, train_scores_mean, 'o-', color="r",
+    #              label="Training score")
+    # axes[0].plot(train_sizes, test_scores_mean, 'o-', color="g",
+    #              label="Cross-validation score")
+    # axes[0].set_ylim((0, 1.1))
+    # axes[0].set_xlabel("# of samples")
+    # axes[0].set_ylabel("Score")
+    # axes[0].legend(loc="best")
 
     # Plot Model-Complexity Curve
     axes[1].grid()
@@ -158,4 +163,42 @@ def runDT(X_train, X_test, y_train, y_test, data, path):
     axes[1].legend(loc="best")
 
     saveDir = os.path.join(path, 'DT - ccp_alpha.png')
+    plt.savefig(saveDir, bbox_inches='tight')
+
+    # ======================================================
+    #   Final Testing Performance 
+    # ======================================================
+
+    # Learning Curve
+    train_sizes, train_scores, test_scores = learning_curve(
+        bestModel, X_test, y_test, cv=None, return_times=False, train_sizes=np.linspace(0.1, 1.0, 8))
+
+    train_scores_mean = np.mean(train_scores, axis=1)
+    train_scores_std = np.std(train_scores, axis=1)
+    test_scores_mean = np.mean(test_scores, axis=1)
+    test_scores_std = np.std(test_scores, axis=1)
+    # fit_times_mean = np.mean(fit_times, axis=1)
+    # fit_times_std = np.std(fit_times, axis=1)
+
+    # Plot Final Testing learning curve
+    _, axes = plt.subplots(1, 1, figsize=(10, 5))
+    axes.grid()
+    axes.set_title('DT - Final Test Learning Curve (max_depth: %i) ' %
+                      bestParams['max_depth'])
+    axes.fill_between(train_sizes, train_scores_mean - train_scores_std,
+                         train_scores_mean + train_scores_std, alpha=0.1,
+                         color="r")
+    axes.fill_between(train_sizes, test_scores_mean - test_scores_std,
+                         test_scores_mean + test_scores_std, alpha=0.1,
+                         color="g")
+    axes.plot(train_sizes, train_scores_mean, 'o-', color="r",
+                 label="Training score")
+    axes.plot(train_sizes, test_scores_mean, 'o-', color="g",
+                 label="Testing score")
+    axes.set_ylim((0, 1.1))
+    axes.set_xlabel("# of samples")
+    axes.set_ylabel("Score")
+    axes.legend(loc="best")
+
+    saveDir = os.path.join(path, 'DT - final test.png')
     plt.savefig(saveDir, bbox_inches='tight')
