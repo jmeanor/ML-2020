@@ -67,22 +67,22 @@ def runAnalysis(data_set, output_path):
 # ==========================================
 #   Load Data Sets
 # ==========================================
-
-# Load Data
 data1 = load_iris()
 # data = load_wine()
 data2 = load_breast_cancer()
-
 timestamp = datetime.now().strftime('%b-%d-%y %I:%M:%S %p')
+
 # ==========================================
 # Analyize Data Set 1
 # ==========================================
 
 path1 = createDateFolder((timestamp, "iris"))
 oldHandler = setLog(path1)
-
 runAnalysis(data_set=data1, output_path=path1)
 
+# ==========================================
+# Analyize Data Set 2
+# ==========================================
 path2 = createDateFolder((timestamp, "breast-cancer"))
 setLog(path2, oldHandler)
 runAnalysis(data_set=data2, output_path=path2)

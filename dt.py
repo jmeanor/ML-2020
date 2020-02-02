@@ -11,12 +11,14 @@ from sklearn.model_selection import learning_curve
 from sklearn.model_selection import validation_curve
 import os
 import math
-import graph
 # Plotting
 import matplotlib
 matplotlib.use("macOSX")
 # Logging
 log = logging.getLogger()
+# Assignment Code Files
+import graph
+from analysis import runAnalysisIteration
 
 HyperParams = {
     'max_depth': [None, 1, 5, 10, 20],
@@ -48,7 +50,6 @@ def runDT(X_train, X_test, y_train, y_test, data, path):
     CV = ShuffleSplit(n_splits=10, test_size=0.333, random_state=0)
 
     dataPack = (X_train, X_test, y_train, y_test, data, path)
-    from analysis import runAnalysisIteration
     runAnalysisIteration('DT', tree.DecisionTreeClassifier(), HyperParams, 'max_depth', CV, data=dataPack)
 
     # ============================

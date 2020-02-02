@@ -1,7 +1,7 @@
 import matplotlib
 from matplotlib import pyplot as plt
 import numpy as np
-from sklearn.neighbors import KNeighborsClassifier
+# from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import learning_curve
@@ -60,7 +60,7 @@ def runAnalysisIteration(key, estimator, HyperParams, c_param_key, CV, data):
     graph.plotLearningCurve(axes[0], learn_title, *learn_vals, *labels)
 
     # Plot Model-Complexity Curve
-    complex_title = 'KNN - Complexity Curve (n_neighbors: %s) ' % (
+    complex_title = '%s - Complexity Curve (n_neighbors: %s) ' % (key,
         bestParams[c_param_key])
     X = HyperParams[c_param_key]
 
@@ -78,4 +78,4 @@ def runAnalysisIteration(key, estimator, HyperParams, c_param_key, CV, data):
     saveDir = os.path.join(path, '%s.png' %key)
     plt.savefig(saveDir, bbox_inches='tight')
 
-    return bestModel
+    return (bestModel, bestParams)

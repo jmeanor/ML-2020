@@ -11,9 +11,8 @@ import graph
 # Logging
 import logging
 log = logging.getLogger()
-
-# Plotting
-matplotlib.use("macOSX")
+# Assignment Code Files
+from analysis import runAnalysisIteration
 
 HyperParams = {
     'kernel': ('linear', 'rbf'),
@@ -28,6 +27,5 @@ def runSVM(X_train, X_test, y_train, y_test, data, path):
     CV = ShuffleSplit(n_splits=10, test_size=0.333, random_state=0)
     
     dataPack = (X_train, X_test, y_train, y_test, data, path)
-    from analysis import runAnalysisIteration
     runAnalysisIteration('SVM', svm.SVC(), HyperParams, 'C', CV, data=dataPack)
 
