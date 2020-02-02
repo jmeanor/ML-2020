@@ -33,9 +33,17 @@ def filecreation():
             raise  # This was not a "directory exist" error..
     return mydir
 
+def setLog(path):
+    logPath = os.path.join(path, 'metadata.txt')
+    fh = myLogger.logging.FileHandler(logPath)
+    fh.setLevel(logging.INFO)
+    fmtr = logging.Formatter('%(message)s')
+    fh.setFormatter(fmtr)
+    myLogger.logger.addHandler(fh)
+
 # Load Data
-# data = load_iris()
-data = load_wine()
+data = load_iris()
+# data = load_wine()
 # print(data.DESCR)
 # pprint(data.target_names)
 # pprint(data.feature_names)
@@ -43,6 +51,7 @@ data = load_wine()
 # pprint(data.target)
 
 path = filecreation()
+setLog(path)
 
 # Randomly split the data into train & test sets.
 X_train, X_test, y_train, y_test = train_test_split(data.data, data.target, test_size=0.2, random_state=42)

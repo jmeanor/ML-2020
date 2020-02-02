@@ -23,7 +23,7 @@ HyperParams = {
 }
 
 def runDT(X_train, X_test, y_train, y_test, data, path):
-    log.info('Analyizing Decision Trees')
+    log.debug('Analyizing Decision Trees')
     log.info('Length of training set: %i' %len(X_train))
     log.debug(X_train.shape[0])
 

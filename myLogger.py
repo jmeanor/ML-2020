@@ -11,7 +11,7 @@ fh.setFormatter(formatter)
 logger.addHandler(fh)
 
 ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
-ch.setFormatter(formatter)
+ch.setLevel(logging.DEBUG)
+ch.setFormatter(consoleFormatter)
 logger.addHandler(ch)
 logging.getLogger('matplotlib.font_manager').disabled = True
