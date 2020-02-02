@@ -26,8 +26,8 @@ from svm import runSVM
 ###
 #    source: https://stackoverflow.com/questions/14115254/creating-a-folder-with-timestamp/14115286
 ###
-def filecreation():
-    mydir = os.path.join( os.getcwd(), 'output', datetime.now().strftime('%b-%d-%y %I:%M:%S %p') )
+def createDateFolder(suffix=("")):
+    mydir = os.path.join( os.getcwd(), 'output', *suffix)
     # print('mydir %s' %mydir)
     try:
         os.makedirs(mydir)
@@ -44,28 +44,43 @@ def setLog(path):
     fh.setFormatter(fmtr)
     myLogger.logger.addHandler(fh)
 
+def runAnalysis(data_set, output_path):
+    # Randomly split the data into train & test sets.
+    X_train, X_test, y_train, y_test = train_test_split(data_set.data, data_set.target, test_size=0.15, random_state=54)
+
+    log.info('Length of training set: %i' %len(X_train))
+    log.info('Length of testing  set: %i' %len(X_test))
+
+    # Run Analysis with Decision Tree
+    runDT(X_train, X_test, y_train, y_test, data_set, output_path)
+    runSVM(X_train, X_test, y_train, y_test, data_set, output_path)
+
+
+# ==========================================
+#   Load Data Sets
+# ==========================================
+
 # Load Data
-# data = load_iris()
+data1 = load_iris()
 # data = load_wine()
-data = load_breast_cancer()
+data2 = load_breast_cancer()
 # print(data.DESCR)
 # pprint(data.target_names)
 # pprint(data.feature_names)
 # pprint(data.data)
 # pprint(data.target)
 
-path = filecreation()
-setLog(path)
+timestamp = datetime.now().strftime('%b-%d-%y %I:%M:%S %p')
+# ==========================================
+# Analyize Data Set 1 
+# ==========================================
 
-# Randomly split the data into train & test sets.
-X_train, X_test, y_train, y_test = train_test_split(data.data, data.target, test_size=0.15, random_state=54)
+path1 = createDateFolder((timestamp, "iris"))
+setLog(path1)
 
-log.info('Length of training set: %i' %len(X_train))
-log.info('Length of testing  set: %i' %len(X_test))
+runAnalysis(data_set=data1, output_path=path1)
 
+path2 = createDateFolder((timestamp,"breast-cancer"))
+setLog(path2)
+runAnalysis(data_set=data2, output_path=path2)
 
-# Run Analysis with Decision Tree
-runDT(X_train, X_test, y_train, y_test, data, path)
-runSVM(X_train, X_test, y_train, y_test, data, path)
-
-# data = load_wine()

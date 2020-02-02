@@ -98,7 +98,7 @@ def runDT(X_train, X_test, y_train, y_test, data, path):
     maxDepth = np.array(HyperParams['max_depth'], dtype=float)
     maxDepth[0] = np.inf
 
-    axes[1].set_title('DT - Complexity Curve (max_depth: %i, ccp_alpha: %d) ' %(bestParams['max_depth'], bestParams['ccp_alpha']))
+    axes[1].set_title('DT - Complexity Curve (max_depth: %s, ccp_alpha: %d) ' %(bestParams['max_depth'], bestParams['ccp_alpha']))
 
     axes[1].fill_between(maxDepth, complex_train_scores_mean - complex_train_scores_std,
                             complex_train_scores_mean + complex_train_scores_std, alpha=0.1,
