@@ -6,6 +6,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import learning_curve
 import os
+import math
 # Plotting
 import matplotlib  
 matplotlib.use("macOSX")
@@ -17,15 +18,23 @@ log = logging.getLogger()
 
 HyperParams = {
     'max_depth': [None, 1, 2, 3, 4, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 175, 200, 250, 300],
-    # 'max_depth': [None, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-    # 'max_depth': np.linspace(0, 100, 100),
     'ccp_alpha': np.linspace(0.0, 5.0, 50)
 }
+MaxNumSteps = 25
 
 def runDT(X_train, X_test, y_train, y_test, data, path):
     log.debug('Analyizing Decision Trees')
-    log.info('Length of training set: %i' %len(X_train))
-    log.debug(X_train.shape[0])
+
+    trainLength = X_train.shape[0]
+    log.debug(trainLength)
+
+    if trainLength <= MaxNumSteps: 
+        HyperParams['max_depth'] = [None, *np.arange(1, trainLength + 1 )]
+    else:
+        step = math.ceil(trainLength / MaxNumSteps ) 
+        log.debug('Step: %s' %step)
+        HyperParams['max_depth'] = [None, *np.arange(1, trainLength, step=step), trainLength]
+    log.debug('HyperParams[\'max_depth\'] = %s' %HyperParams)
 
     CV = ShuffleSplit(n_splits=10, test_size=0.333, random_state=0)
 
@@ -38,7 +47,7 @@ def runDT(X_train, X_test, y_train, y_test, data, path):
     gridResults = gsc.fit(X_train, y_train)
     bestParams = gridResults.best_params_
     bestModel = gridResults.best_estimator_
-    log.info('Best Params: %s' %bestParams)
+    log.info('DT - Best Params: %s' %bestParams)
 
     # Learning Curve 
     train_sizes, train_scores, valid_scores, fit_times, score_times = learning_curve(
@@ -53,7 +62,7 @@ def runDT(X_train, X_test, y_train, y_test, data, path):
 
     # Complexity Curve
     from sklearn.model_selection import validation_curve
-    complex_train_scores, complex_valid_scores = validation_curve(bestModel, X_train, y_train, "max_depth", HyperParams['max_depth'], cv=CV)
+    complex_train_scores, complex_valid_scores = validation_curve(bestModel, X_train, y_train, "ccp_alpha", HyperParams['ccp_alpha'], cv=CV)
 
     complex_train_scores_mean   = np.mean(complex_train_scores, axis=1)
     complex_train_scores_std    = np.std(complex_train_scores, axis=1)
@@ -82,10 +91,11 @@ def runDT(X_train, X_test, y_train, y_test, data, path):
 
     # Plot Model-Complexity Curve
     axes[1].grid()
-    maxDepth = np.array(HyperParams['max_depth'], dtype=float)
-    maxDepth[0] = np.inf
+    # maxDepth = np.array(HyperParams['max_depth'], dtype=float)
+    # maxDepth[0] = np.inf
+    maxDepth = np.array(HyperParams['ccp_alpha'], dtype=float)
 
-    axes[1].set_title('DT - Complexity Curve (max_depth: %i) ' % bestParams['max_depth'])
+    axes[1].set_title('DT - Complexity Curve (ccp_alpha: %i) ' % bestParams['ccp_alpha'])
 
     axes[1].fill_between(maxDepth, complex_train_scores_mean - complex_train_scores_std,
                             complex_train_scores_mean + complex_train_scores_std, alpha=0.1,
@@ -103,6 +113,6 @@ def runDT(X_train, X_test, y_train, y_test, data, path):
     axes[1].legend(loc="best")
 
     # plt.show()
-    log.debug('Supported plot filetypes: %s' %plt.gcf().canvas.get_supported_filetypes())
+    # log.debug('Supported plot filetypes: %s' %plt.gcf().canvas.get_supported_filetypes())
     saveDir = os.path.join( path, 'DT.png')
     plt.savefig(saveDir, bbox_inches='tight')

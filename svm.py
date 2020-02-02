@@ -20,8 +20,8 @@ HyperParams = {
 }
 
 def runSVM(X_train, X_test, y_train, y_test, data, path):
-    log.info('Analyizing SVM')
-    log.info('Length of training set: %i' %len(X_train))
+    log.debug('Analyizing SVM')
+    log.debug('Length of training set: %i' %len(X_train))
     log.debug(X_train.shape[0])
 
     CV = ShuffleSplit(n_splits=10, test_size=0.333, random_state=0)
@@ -35,7 +35,7 @@ def runSVM(X_train, X_test, y_train, y_test, data, path):
     gridResults = gsc.fit(X_train, y_train)
     bestParams = gridResults.best_params_
     bestModel = gridResults.best_estimator_
-    log.info('Best SVM Params: %s' % bestParams)
+    log.info('SVM - Best Params: %s' % bestParams)
 
     # Learning Curve 
     train_sizes, train_scores, valid_scores, fit_times, score_times = learning_curve(
@@ -99,6 +99,6 @@ def runSVM(X_train, X_test, y_train, y_test, data, path):
 
     
     # plt.show()
-    log.info('Saving SVM.png')
+    log.debug('Saving SVM.png')
     saveDir = os.path.join( path, 'SVM.png')
     plt.savefig(saveDir, bbox_inches='tight')

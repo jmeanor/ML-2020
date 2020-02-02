@@ -12,6 +12,8 @@ import myLogger
 import logging
 logger = logging.getLogger()
 logger.info('Initializing main.py')
+import logging
+log = logging.getLogger()
 # Plotting
 import matplotlib  
 matplotlib.use("macOSX")
@@ -56,6 +58,12 @@ setLog(path)
 # Randomly split the data into train & test sets.
 X_train, X_test, y_train, y_test = train_test_split(data.data, data.target, test_size=0.2, random_state=42)
 
+log.info('Length of training set: %i' %len(X_train))
+log.info('Length of testing  set: %i' %len(X_test))
+
+
 # Run Analysis with Decision Tree
 runDT(X_train, X_test, y_train, y_test, data, path)
 runSVM(X_train, X_test, y_train, y_test, data, path)
+
+# data = load_wine()
