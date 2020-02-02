@@ -60,19 +60,24 @@ def runSVM(X_train, X_test, y_train, y_test, data, path):
     complex_test_scores_mean = np.mean(complex_valid_scores, axis=1)
     complex_test_scores_std = np.std(complex_valid_scores, axis=1)
 
-    # Create subplots 
+    # Create subplots
     _, axes = plt.subplots(1, 2, figsize=(12, 5))
 
     # Plot learning curve
-    learn_title = 'SVM - Learning Curve (kernel: %s, C: %.3f) ' % (bestParams['kernel'], bestParams['C'])
-    learn_vals = (train_sizes, train_scores_mean, train_scores_std, test_scores_mean, test_scores_std)
-    labels = ("Training score", "Cross-validation score", "# of samples", "Score")
+    learn_title = 'SVM - Learning Curve (kernel: %s, C: %.3f) ' % (
+        bestParams['kernel'], bestParams['C'])
+    learn_vals = (train_sizes, train_scores_mean,
+                  train_scores_std, test_scores_mean, test_scores_std)
+    labels = ("Training score", "Cross-validation score",
+              "# of samples", "Score")
     graph.plotLearningCurve(axes[0], learn_title, *learn_vals, *labels)
-    
+
     # Plot Model-Complexity Curve
-    complex_title = 'SVM - Complexity Curve (kernel: %s, C: %.3f) ' % (bestParams['kernel'], bestParams['C'])
+    complex_title = 'SVM - Complexity Curve (kernel: %s, C: %.3f) ' % (
+        bestParams['kernel'], bestParams['C'])
     X = HyperParams['C']
-    complex_vals = (X, complex_train_scores_mean, complex_train_scores_std, complex_test_scores_mean, complex_test_scores_std)
+    complex_vals = (X, complex_train_scores_mean, complex_train_scores_std,
+                    complex_test_scores_mean, complex_test_scores_std)
     labels = ("Training score", "Cross-validation score", "C Param", "Score")
     graph.plotComplexityCurve(axes[1], complex_title, *complex_vals, *labels)
 
