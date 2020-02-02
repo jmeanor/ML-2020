@@ -7,6 +7,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import learning_curve
 import os
+import graph
 # Logging
 import logging
 log = logging.getLogger()
@@ -40,7 +41,7 @@ def runSVM(X_train, X_test, y_train, y_test, data, path):
 
     # Learning Curve
     train_sizes, train_scores, valid_scores, fit_times, score_times = learning_curve(
-        bestModel, X_train, y_train, cv=CV, return_times=True)
+        bestModel, X_train, y_train, cv=CV, return_times=True,  train_sizes=np.linspace(0.1, 1.0, 8))
 
     train_scores_mean = np.mean(train_scores, axis=1)
     train_scores_std = np.std(valid_scores, axis=1)
@@ -59,47 +60,21 @@ def runSVM(X_train, X_test, y_train, y_test, data, path):
     complex_test_scores_mean = np.mean(complex_valid_scores, axis=1)
     complex_test_scores_std = np.std(complex_valid_scores, axis=1)
 
-    # Plot learning curve
+    # Create subplots 
     _, axes = plt.subplots(1, 2, figsize=(12, 5))
-    axes[0].grid()
-    axes[0].set_title('SVM - Learning Curve (kernel: %s, C: %.3f) ' %
-                      (bestParams['kernel'], bestParams['C']))
-    axes[0].fill_between(train_sizes, train_scores_mean - train_scores_std,
-                         train_scores_mean + train_scores_std, alpha=0.1,
-                         color="r")
-    axes[0].fill_between(train_sizes, test_scores_mean - test_scores_std,
-                         test_scores_mean + test_scores_std, alpha=0.1,
-                         color="g")
-    axes[0].plot(train_sizes, train_scores_mean, 'o-', color="r",
-                 label="Training score")
-    axes[0].plot(train_sizes, test_scores_mean, 'o-', color="g",
-                 label="Cross-validation score")
-    axes[0].set_ylim((0, 1.1))
-    axes[0].set_xlabel("# of samples")
-    axes[0].set_ylabel("Score")
-    axes[0].legend(loc="best")
 
+    # Plot learning curve
+    learn_title = 'SVM - Learning Curve (kernel: %s, C: %.3f) ' % (bestParams['kernel'], bestParams['C'])
+    learn_vals = (train_sizes, train_scores_mean, train_scores_std, test_scores_mean, test_scores_std)
+    labels = ("Training score", "Cross-validation score", "# of samples", "Score")
+    graph.plotLearningCurve(axes[0], learn_title, *learn_vals, *labels)
+    
     # Plot Model-Complexity Curve
-    cVals = HyperParams['C']
-    axes[1].grid()
-
-    axes[1].set_title('SVM - Complexity Curve (kernel: %s, C: %.3f) ' %
-                      (bestParams['kernel'], bestParams['C']))
-
-    axes[1].fill_between(cVals, complex_train_scores_mean - complex_train_scores_std,
-                         complex_train_scores_mean + complex_train_scores_std, alpha=0.1,
-                         color="b")
-    axes[1].fill_between(cVals, complex_test_scores_mean - complex_test_scores_std,
-                         complex_test_scores_mean + complex_test_scores_std, alpha=0.1,
-                         color="m")
-    axes[1].plot(cVals, complex_train_scores_mean, 'o-', color="b",
-                 label="Training score")
-    axes[1].plot(cVals, complex_test_scores_mean, 'o-', color="m",
-                 label="Cross-validation score")
-    axes[1].set_ylim((0, 1.1))
-    axes[1].set_xlabel("C Param")
-    axes[1].set_ylabel("Score")
-    axes[1].legend(loc="best")
+    complex_title = 'SVM - Complexity Curve (kernel: %s, C: %.3f) ' % (bestParams['kernel'], bestParams['C'])
+    X = HyperParams['C']
+    complex_vals = (X, complex_train_scores_mean, complex_train_scores_std, complex_test_scores_mean, complex_test_scores_std)
+    labels = ("Training score", "Cross-validation score", "C Param", "Score")
+    graph.plotComplexityCurve(axes[1], complex_title, *complex_vals, *labels)
 
     # plt.show()
     log.debug('Saving SVM.png')
