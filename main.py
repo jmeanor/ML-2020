@@ -39,14 +39,16 @@ def createDateFolder(suffix=("")):
             raise  # This was not a "directory exist" error..
     return mydir
 
-
-def setLog(path):
+def setLog(path, oldHandler = None):
+    if oldHandler != None:
+        myLogger.logger.removeHandler(oldHandler)
     logPath = os.path.join(path, 'metadata.txt')
     fh = myLogger.logging.FileHandler(logPath)
     fh.setLevel(logging.INFO)
     fmtr = logging.Formatter('%(message)s')
     fh.setFormatter(fmtr)
     myLogger.logger.addHandler(fh)
+    return fh
 
 
 def runAnalysis(data_set, output_path):
@@ -58,8 +60,8 @@ def runAnalysis(data_set, output_path):
     log.info('Length of testing  set: %i' % len(X_test))
 
     # Run Analysis with Decision Tree
-    # runDT(X_train, X_test, y_train, y_test, data_set, output_path)
-    # runSVM(X_train, X_test, y_train, y_test, data_set, output_path)
+    runDT(X_train, X_test, y_train, y_test, data_set, output_path)
+    runSVM(X_train, X_test, y_train, y_test, data_set, output_path)
     runKNN(X_train, X_test, y_train, y_test, data_set, output_path)
 
 # ==========================================
@@ -70,11 +72,6 @@ def runAnalysis(data_set, output_path):
 data1 = load_iris()
 # data = load_wine()
 data2 = load_breast_cancer()
-# print(data.DESCR)
-# pprint(data.target_names)
-# pprint(data.feature_names)
-# pprint(data.data)
-# pprint(data.target)
 
 timestamp = datetime.now().strftime('%b-%d-%y %I:%M:%S %p')
 # ==========================================
@@ -82,10 +79,10 @@ timestamp = datetime.now().strftime('%b-%d-%y %I:%M:%S %p')
 # ==========================================
 
 path1 = createDateFolder((timestamp, "iris"))
-setLog(path1)
+oldHandler = setLog(path1)
 
 runAnalysis(data_set=data1, output_path=path1)
 
 path2 = createDateFolder((timestamp, "breast-cancer"))
-setLog(path2)
+setLog(path2, oldHandler)
 runAnalysis(data_set=data2, output_path=path2)
