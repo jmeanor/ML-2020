@@ -1,7 +1,7 @@
 # Main
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.datasets import load_iris, load_wine
+from sklearn.datasets import load_iris, load_wine, load_breast_cancer
 from pprint import pprint
 import pandas as pd
 import graphviz
@@ -18,6 +18,7 @@ log = logging.getLogger()
 import matplotlib  
 matplotlib.use("macOSX")
 from matplotlib import pyplot as plt
+
 # Assignment code
 from dt import runDT
 from svm import runSVM
@@ -44,8 +45,9 @@ def setLog(path):
     myLogger.logger.addHandler(fh)
 
 # Load Data
-data = load_iris()
+# data = load_iris()
 # data = load_wine()
+data = load_breast_cancer()
 # print(data.DESCR)
 # pprint(data.target_names)
 # pprint(data.feature_names)
@@ -56,7 +58,7 @@ path = filecreation()
 setLog(path)
 
 # Randomly split the data into train & test sets.
-X_train, X_test, y_train, y_test = train_test_split(data.data, data.target, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(data.data, data.target, test_size=0.15, random_state=54)
 
 log.info('Length of training set: %i' %len(X_train))
 log.info('Length of testing  set: %i' %len(X_test))
