@@ -1,8 +1,5 @@
 # Main
 import matplotlib
-from svm import runSVM
-from dt import runDT
-from knn import runKNN
 from matplotlib import pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -13,6 +10,11 @@ import graphviz
 import errno
 import os
 from datetime import datetime
+# Assignment Code
+from svm import runSVM
+from dt import runDT
+from knn import runKNN
+from ann import runANN
 # Logging
 import myLogger
 import logging
@@ -60,9 +62,10 @@ def runAnalysis(data_set, output_path):
     log.info('Length of testing  set: %i' % len(X_test))
 
     # Run Analysis with Decision Tree
-    runDT(X_train, X_test, y_train, y_test, data_set, output_path)
-    runSVM(X_train, X_test, y_train, y_test, data_set, output_path)
-    runKNN(X_train, X_test, y_train, y_test, data_set, output_path)
+    # runDT(X_train, X_test, y_train, y_test, data_set, output_path)
+    # runSVM(X_train, X_test, y_train, y_test, data_set, output_path)
+    # runKNN(X_train, X_test, y_train, y_test, data_set, output_path)
+    runANN(X_train, X_test, y_train, y_test, data_set, output_path)
 
 # ==========================================
 #   Load Data Sets
