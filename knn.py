@@ -17,15 +17,20 @@ from analysis import runAnalysisIteration
 matplotlib.use("macOSX")
 
 HyperParams = {
-    'n_neighbors': [*np.arange(1, 7)],
+    'n_neighbors': [*np.arange(1, 20)],
+    'weights': ['uniform', 'distance']
 }
-
+ComplexParams = {
+    'n_neighbors': [*np.arange(1, 20)],
+    'leaf_size': [10, 20, 30, 40, 50]
+}
 def runKNN(X_train, X_test, y_train, y_test, data, path):
     log.debug('Analyizing KNN')
     log.debug('Length of training set: %i' % len(X_train))
     log.debug(X_train.shape[0])
 
-    CV = ShuffleSplit(n_splits=10, test_size=0.333, random_state=0)
+    # CV = ShuffleSplit(n_splits=10, test_size=0.333, random_state=0)
+    from cv import CV
 
     dataPack = (X_train, X_test, y_train, y_test, data, path)
-    runAnalysisIteration('KNN', KNeighborsClassifier(), HyperParams, 'n_neighbors', CV, data=dataPack)
+    runAnalysisIteration('KNN', KNeighborsClassifier(), HyperParams, ComplexParams, 'leaf_size', CV, data=dataPack)

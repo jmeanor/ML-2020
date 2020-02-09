@@ -21,23 +21,26 @@ import graph
 from analysis import runAnalysisIteration
 
 HyperParams = {
-    'max_depth': [None, 1, 5, 10, 20],
-    'ccp_alpha': np.linspace(0.0, 5.0, 25)
+    # 'max_depth': [None, 1, 2, 3, 4, 5, 10, 20],
+    'ccp_alpha': np.linspace(0.0, 1.0, 15)
     # 'ccp_alpha': [0.0]
 }
 ComplexityParam = {
-    'ccp_alpha': np.linspace(0.0, 5.0, 25)
+    'ccp_alpha': np.linspace(0.0, 2.0, 5),
+    'max_depth': [None, 1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 500, 800]
 }
-MaxNumSteps = 25
+MaxNumSteps = 10
 
 def setHyperParams(trainLength):
     if trainLength <= MaxNumSteps:
-        HyperParams['max_depth'] = [None, *np.arange(1, trainLength + 1)]
+        print('')
+        # HyperParams['max_depth'] = [None, *np.arange(1, trainLength + 1)]
+        # HyperParams['max_depth'] = [None, *np.logspace(0, trainLength+1, 10)]
     else:
         step = math.ceil(trainLength / MaxNumSteps)
         log.debug('Step: %s' % step)
-        HyperParams['max_depth'] = [
-            None, *np.arange(1, trainLength, step=step), trainLength]
+        # HyperParams['max_depth'] = [
+        #     None, 10, 20, 30, 40, *np.arange(50, trainLength, step=step), trainLength]
     log.debug('HyperParams[\'max_depth\'] = %s' % HyperParams)
     return
 
@@ -45,12 +48,13 @@ def runDT(X_train, X_test, y_train, y_test, data, path):
     log.debug('Analyizing Decision Trees')
     trainLength = X_train.shape[0]
     log.debug(trainLength)
-    setHyperParams(trainLength)
+    setHyperParams(X_train.shape[0])
 
-    CV = ShuffleSplit(n_splits=10, test_size=0.333, random_state=0)
+    # CV = ShuffleSplit(n_splits=10, test_size=0.333, random_state=0)
+    from cv import CV
 
     dataPack = (X_train, X_test, y_train, y_test, data, path)
-    runAnalysisIteration('DT', tree.DecisionTreeClassifier(), HyperParams, 'max_depth', CV, data=dataPack)
+    runAnalysisIteration('DT', tree.DecisionTreeClassifier(), HyperParams, ComplexityParam, 'max_depth', CV, data=dataPack)
 
     # ============================
     # Second output plot for Alpha
