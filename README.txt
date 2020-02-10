@@ -31,3 +31,21 @@ Notes:
 To change the hyper-parameters under test, and the complexity analysis, they're simply changed in each file by either commenting in/out or adding to the dictionary.
 
 Normally, main.py will run every analysis for both datasets. To selectively run the analysis for only one dataset or one algorithm, simply comment it out within main.py.
+
+Project Structure
+
+├── README.txt
+├── analysis.py
+├── ann.py
+├── boosting.py
+├── cv.py
+├── dt.py
+├── graph.py
+├── input
+│   ├── hirosaki_temp_cherry.csv
+│   └── singapore-listings.csv
+├── knn.py
+├── log.txt
+├── main.py
+├── myLogger.py
+└── svm.py

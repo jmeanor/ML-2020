@@ -17,7 +17,7 @@ from analysis import runAnalysisIteration
 HyperParams = {
     'kernel': ('linear', 'rbf', 'poly', 'sigmoid'),
     'C': [1, 10, 100, 1000],
-    # 'max_iter': [5000]
+    'max_iter': [5000]
 }
 ComplexParams = {
     'kernel': ('linear', 'rbf'),
