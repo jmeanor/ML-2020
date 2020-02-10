@@ -15,16 +15,21 @@ log = logging.getLogger()
 from analysis import runAnalysisIteration
 
 HyperParams = {
+    'hidden_layer_sizes': [(100,) (50,50), (100,100)],
     'learning_rate': ('constant', 'adaptive'),
-    # 'hidden_layer_sizes': [''],
     'solver': ['sgd', 'adam'],
     'alpha': [0.0001, 0.05],
-    # 'max_iter': [200, 300, 400]
+
+    # 'hidden_layer_sizes': [(5,), (20,), (100,)],
+    # 'solver': ['adam'],
+    # 'alpha': [0.0001],
 }
 ComplexParams = {
     'learning_rate': ('constant', 'invscaling', 'adaptive'),
-    'max_iter': [200, 300, 400],
-    # 'hidden_layer_sizes': [(50,50,50), (50,100,50), (100,)],
+    'max_iter': [25, 50, 100, 150, 200, 250],
+    # 'hidden_layer_sizes': [(50,50), (100,100)],
+    'hidden_layer_sizes': [(5,), (20,), (100,)],
+    
 }
 def runANN(X_train, X_test, y_train, y_test, data, path):
     log.debug('Analyizing ANN')

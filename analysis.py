@@ -75,8 +75,7 @@ def runAnalysisIteration(key, estimator, HyperParams, ComplexParams, c_param_key
     _, axes = plt.subplots(1, 2, figsize=(12, 5))
 
     # Plot learning curve
-    learn_title = '%s - Learning Curve (%s: %s) ' % (key,c_param_key,
-        # bestParams[c_param_key])
+    learn_title = '%s - Learning Curve (%s) ' % (key,
         bestParams)
     learn_vals = (train_sizes, train_scores_mean,
                   train_scores_std, test_scores_mean, test_scores_std)
@@ -94,6 +93,9 @@ def runAnalysisIteration(key, estimator, HyperParams, ComplexParams, c_param_key
     if(c_param_key == 'max_depth'):
         X = np.array(ComplexParams['max_depth'], dtype=float)
         X[0] = np.inf
+    # if(c_param_key == 'hidden_layer_sizes'):
+    #     X = np.array([5, 20, 100])
+
     complex_vals = (X, complex_train_scores_mean, complex_train_scores_std,
                     complex_test_scores_mean, complex_test_scores_std)
     labels = ("Training score", "Cross-validation score", c_param_key, "Score")

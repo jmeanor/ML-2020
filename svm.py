@@ -16,16 +16,17 @@ from analysis import runAnalysisIteration
 
 HyperParams = {
     'kernel': ('linear', 'rbf', 'poly', 'sigmoid'),
-    'C': np.logspace(-6, -1, 5),
-    'max_iter': [5000]
+    'C': [1, 10, 100, 1000],
+    # 'max_iter': [5000]
 }
 ComplexParams = {
     'kernel': ('linear', 'rbf'),
-    'C': np.logspace(-6, -1, 5),
-    'max_iter': [1000,2000,3000,5000]
+    'C': [1, 10, 100, 1000],
+    # 'max_iter': [1000,2000,3000,5000]
+    'max_iter': np.arange(50, 500, 100)
 }
 
-def runSVM(X_train, X_test, y_train, y_test, data, path):
+def runSVM(X_train, X_test, y_train, y_test, data, path, classification=True):
     log.debug('Analyizing SVM')
     log.debug('Length of training set: %i' % len(X_train))
     log.debug(X_train.shape[0])
@@ -35,8 +36,12 @@ def runSVM(X_train, X_test, y_train, y_test, data, path):
     from cv import CV
 
     # Debug
-    HyperParams = {'C': [0.1], 'kernel': ['poly'], 'max_iter': [10000]}
+    # HyperParams = {'C': [0.1], 'kernel': ['poly'], 'max_iter': [10000]}
+    if(classification):
+        est = svm.SVC()
+    else: 
+        est = svm.SVR()
     
     dataPack = (X_train, X_test, y_train, y_test, data, path)
-    runAnalysisIteration('SVM', svm.SVC(), HyperParams, ComplexParams, 'max_iter', CV, data=dataPack)
+    runAnalysisIteration('SVM', est, HyperParams, ComplexParams, 'max_iter', CV, data=dataPack)
 

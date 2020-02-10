@@ -15,6 +15,7 @@ from svm import runSVM
 from dt import runDT
 from knn import runKNN
 from ann import runANN
+from boosting import runBoost
 # Logging
 import myLogger
 import logging
@@ -60,28 +61,45 @@ def loadDataset1():
     df = pd.read_csv('./input/singapore-listings.csv', delimiter=',', header=0)
     
     # Pre-Processing - Removing attributes with no value
+    # df = df.drop(['id', 'name', 'host_name', 'last_review'], axis=1)
     df = df.drop(['id', 'name', 'host_name', 'last_review'], axis=1)
     df = df[pd.notnull(df['reviews_per_month'])]
+
+    # ==========================================
+    # Discretize the classifications 
+    #  Source: https://dfrieds.com/data-analysis/bin-values-python-pandas
+    # ==========================================
+    df['price_bins'] = pd.cut(x=df['price'], bins= np.arange(10, 10010, step=10), labels=np.arange(10, 10000, step=10)).astype(int)
+
 
     # ==========================================
     # PreProcessing - Encoding Categories
     # Source - https://blog.cambridgespark.com/robust-one-hot-encoding-in-python-3e29bfcec77e
     # ==========================================
     from sklearn.preprocessing import LabelEncoder, OneHotEncoder
-
+    from sklearn.preprocessing import KBinsDiscretizer
     categories = [
         'neighbourhood_group',
         'neighbourhood',
-        'room_type',
+        'room_type'
     ]
     df_processed = pd.get_dummies(df, prefix_sep="__", columns=categories)
     dummies = [col for col in df_processed
         if "__" in col and col.split("__")[0] in categories]
     processed_columns = list(df_processed.columns[:])
 
-    target = np.array(df_processed['price'])
-    data = np.array(df_processed.drop('price', axis=1))
-
+    print(processed_columns)
+    target = np.array(df_processed['price_bins'])
+    data = np.array(df_processed.drop('price_bins', axis=1))
+    
+    # 2nd Iteration with imputing missing values
+    # from sklearn.impute import SimpleImputer
+    # imputer = SimpleImputer(missing_values = np.nan, strategy = 'constant', fill_value=0)
+    # imputer = imputer.fit(data)
+    # data = imputer.transform(data)
+    # 
+    pprint(data)
+    
     sub = 20000
     # data1 = {
     #     'data': data[0:sub,:],
@@ -131,7 +149,7 @@ def loadDevDatasets():
     # pprint(type(data))
     return data1, data2
 
-def runAnalysis(data_set, output_path):
+def runAnalysis(data_set, output_path, classification=True):
     # Randomly split the data into train & test sets.
     X_train, X_test, y_train, y_test = train_test_split(
         data_set['data'], data_set['target'], test_size=0.15, random_state=0)
@@ -140,8 +158,9 @@ def runAnalysis(data_set, output_path):
     log.info('Length of testing  set: %i' % len(X_test))
 
     # Run Analysis with Decision Tree
-    runDT(X_train, X_test, y_train, y_test, data_set, output_path)
-    runKNN(X_train, X_test, y_train, y_test, data_set, output_path)
+    runDT(X_train, X_test, y_train, y_test, data_set, output_path, classification=classification)
+    runBoost(X_train, X_test, y_train, y_test, data_set, output_path, classification=classification)
+    runKNN(X_train, X_test, y_train, y_test, data_set, output_path, classification=classification)
     runSVM(X_train, X_test, y_train, y_test, data_set, output_path)
     runANN(X_train, X_test, y_train, y_test, data_set, output_path)
 
@@ -154,12 +173,12 @@ timestamp = datetime.now().strftime('%b-%d-%y %I:%M:%S %p')
 data1 = loadDataset1() 
 path1 = createDateFolder((timestamp, "AirBNB Singapore"))
 oldHandler = setLog(path1)
-runAnalysis(data_set=data1, output_path=path1)
+runAnalysis(data_set=data1, output_path=path1, classification=True)
 
 # ==========================================
 # Analyize Data Set 2
 # ==========================================
-data2 = loadDataset2() 
+data2 = loadDataset3() 
 path2 = createDateFolder((timestamp, "Cherry-Blossoms"))
 setLog(path2, oldHandler)
 runAnalysis(data_set=data2, output_path=path2)

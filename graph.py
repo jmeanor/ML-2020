@@ -27,7 +27,7 @@ def plotLearningCurve(axes, title, train_sizes, train_scores_mean, train_scores_
 def plotComplexityCurve(axes, title, X, train_scores_mean, train_scores_std, test_scores_mean, 
     test_scores_std, label1="", label2="", xlabel="", ylabel=""):
     axes.grid()
-    axes.set_title(title)
+    axes.set_title('Model Complexity')
 
     axes.fill_between(X, train_scores_mean - train_scores_std,
                          train_scores_mean + train_scores_std, alpha=0.1,
