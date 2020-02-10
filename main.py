@@ -63,13 +63,13 @@ def loadDataset1():
     # Pre-Processing - Removing attributes with no value
     # df = df.drop(['id', 'name', 'host_name', 'last_review'], axis=1)
     df = df.drop(['id', 'name', 'host_name', 'last_review'], axis=1)
-    df = df[pd.notnull(df['reviews_per_month'])]
+    # df = df[pd.notnull(df['reviews_per_month'])]
 
     # ==========================================
     # Discretize the classifications 
     #  Source: https://dfrieds.com/data-analysis/bin-values-python-pandas
     # ==========================================
-    df['price_bins'] = pd.cut(x=df['price'], bins= np.arange(10, 10010, step=10), labels=np.arange(10, 10000, step=10)).astype(int)
+    # df['price_bins'] = pd.cut(x=df['price'], bins= np.arange(10, 10010, step=10), labels=np.arange(10, 10000, step=10)).astype(int)
 
 
     # ==========================================
@@ -89,8 +89,10 @@ def loadDataset1():
     processed_columns = list(df_processed.columns[:])
 
     print(processed_columns)
-    target = np.array(df_processed['price_bins'])
-    data = np.array(df_processed.drop('price_bins', axis=1))
+    target = np.array(df_processed['price'])
+    data = np.array(df_processed.drop('price', axis=1))
+    # target = np.array(df_processed['price_bins'])
+    # data = np.array(df_processed.drop('price_bins', axis=1))
     
     # 2nd Iteration with imputing missing values
     # from sklearn.impute import SimpleImputer
@@ -160,9 +162,9 @@ def runAnalysis(data_set, output_path, classification=True):
     # Run Analysis with Decision Tree
     runDT(X_train, X_test, y_train, y_test, data_set, output_path, classification=classification)
     runBoost(X_train, X_test, y_train, y_test, data_set, output_path, classification=classification)
-    runKNN(X_train, X_test, y_train, y_test, data_set, output_path, classification=classification)
-    runSVM(X_train, X_test, y_train, y_test, data_set, output_path)
-    runANN(X_train, X_test, y_train, y_test, data_set, output_path)
+    # runKNN(X_train, X_test, y_train, y_test, data_set, output_path, classification=classification)
+    # runSVM(X_train, X_test, y_train, y_test, data_set, output_path)
+    # runANN(X_train, X_test, y_train, y_test, data_set, output_path)
 
 # ==========================================
 
@@ -178,7 +180,7 @@ runAnalysis(data_set=data1, output_path=path1, classification=True)
 # ==========================================
 # Analyize Data Set 2
 # ==========================================
-data2 = loadDataset3() 
-path2 = createDateFolder((timestamp, "Cherry-Blossoms"))
-setLog(path2, oldHandler)
-runAnalysis(data_set=data2, output_path=path2)
+# data2 = loadDataset3() 
+# path2 = createDateFolder((timestamp, "Cherry-Blossoms"))
+# setLog(path2, oldHandler)
+# runAnalysis(data_set=data2, output_path=path2)

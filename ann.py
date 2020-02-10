@@ -15,7 +15,7 @@ log = logging.getLogger()
 from analysis import runAnalysisIteration
 
 HyperParams = {
-    'hidden_layer_sizes': [(100,) (50,50), (100,100)],
+    'hidden_layer_sizes': [(100,), (50,50), (100,100)],
     'learning_rate': ('constant', 'adaptive'),
     'solver': ['sgd', 'adam'],
     'alpha': [0.0001, 0.05],
