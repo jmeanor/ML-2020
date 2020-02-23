@@ -136,6 +136,19 @@ def loadDataset3():
         'target': target
     }
     return data2
+
+# For Probelm Set 1 - Question 4
+def loadHousingData():
+    df = pd.read_csv('./input/housing.csv', delimiter=',', header=0)
+    
+    pprint(df)
+    target = np.array(df['MEDV'])
+    data = np.array(df.drop('MEDV', axis=1))
+    data2 = {
+        'data': data,
+        'target': target
+    }
+    return data2
 # ==========================================
 #   Load DEV Data Sets
 # ==========================================
@@ -157,10 +170,10 @@ def runAnalysis(data_set, output_path, classification=True):
 
     # Run Analysis with Decision Tree
     runDT(X_train, X_test, y_train, y_test, data_set, output_path, classification=classification)
-    runBoost(X_train, X_test, y_train, y_test, data_set, output_path, classification=classification)
-    runKNN(X_train, X_test, y_train, y_test, data_set, output_path, classification=classification)
-    runSVM(X_train, X_test, y_train, y_test, data_set, output_path)
-    runANN(X_train, X_test, y_train, y_test, data_set, output_path)
+    # runBoost(X_train, X_test, y_train, y_test, data_set, output_path, classification=classification)
+    # runKNN(X_train, X_test, y_train, y_test, data_set, output_path, classification=classification)
+    # runSVM(X_train, X_test, y_train, y_test, data_set, output_path)
+    # runANN(X_train, X_test, y_train, y_test, data_set, output_path)
 
 # ==========================================
 
@@ -168,15 +181,15 @@ timestamp = datetime.now().strftime('%b-%d-%y %I:%M:%S %p')
 # ==========================================
 # Analyize Data Set 1
 # ==========================================
-data1 = loadDataset1() 
-path1 = createDateFolder((timestamp, "AirBNB Singapore"))
+data1 = loadHousingData() 
+path1 = createDateFolder((timestamp, "Housing Data"))
 oldHandler = setLog(path1)
-runAnalysis(data_set=data1, output_path=path1, classification=True)
+runAnalysis(data_set=data1, output_path=path1, classification=False)
 
 # ==========================================
 # Analyize Data Set 2
 # ==========================================
-data2 = loadDataset3() 
-path2 = createDateFolder((timestamp, "Cherry-Blossoms"))
-setLog(path2, oldHandler)
-runAnalysis(data_set=data2, output_path=path2)
+# data2 = loadDataset3() 
+# path2 = createDateFolder((timestamp, "Cherry-Blossoms"))
+# setLog(path2, oldHandler)
+# runAnalysis(data_set=data2, output_path=path2)

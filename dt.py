@@ -60,5 +60,19 @@ def runDT(X_train, X_test, y_train, y_test, data, path, classification=True):
 
 
     dataPack = (X_train, X_test, y_train, y_test, data, path)
-    runAnalysisIteration('DT', est, HyperParams, ComplexityParam, 'max_depth', CV, data=dataPack)
+    model, params = runAnalysisIteration('DT', est, HyperParams, ComplexityParam, 'min_samples_split', CV, data=dataPack)
 
+    # saveDir = os.path.join(path, 'tree_model.dot')
+    # dotfile = open(saveDir, 'wr')
+    names = ['CRIM','ZN','INDUS','CHAS','NOX','RM','AGE','DIS','RAD','TAX','PTRATIO','B','LSTAT']
+    
+    import graphviz
+    dot_graph = tree.export_graphviz(model, out_file = None, feature_names = names)
+    g = graphviz.Source(dot_graph)
+    g.format = "png"
+    g.render("tree-model")
+
+    # tree.export_graphviz(model, out_file = dotfile, feature_names = names)
+    # g = graphviz.Source(dotfile)
+    # g.render()
+    # dotfile.close()
